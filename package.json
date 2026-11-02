@@ -1,0 +1,29 @@
+{
+	"name": "biome-plugin-anti-slop",
+	"version": "0.1.0",
+	"private": true,
+	"description": "Opinionated Biome plugins that reject low-evidence TypeScript and JavaScript patterns.",
+	"type": "module",
+	"files": [
+		"src"
+	],
+	"scripts": {
+		"check": "pnpm lint && pnpm test && pnpm typecheck && pnpm check:skill-assets",
+		"lint": "biome ci .",
+		"test": "node --test \"src/**/*.test.ts\"",
+		"typecheck": "tsc --noEmit",
+		"sync:skill-assets": "node scripts/sync-skill-assets.mjs",
+		"check:skill-assets": "node scripts/sync-skill-assets.mjs --check"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.6.4",
+		"@biomejs/runtime": "2.6.4",
+		"@types/node": "26.6.6",
+		"typescript": "7.0.2"
+	},
+	"packageManager": "pnpm@10.29.2",
+	"engines": {
+		"node": ">=24"
+	},
+	"license": "MIT"
+}
