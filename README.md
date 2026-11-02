@@ -1,5 +1,7 @@
 # anti-slop for Biome
 
+[![skills.sh](https://skills.sh/b/arberbr/biome-anti-slop)](https://skills.sh/arberbr/biome-anti-slop)
+
 Opinionated [Biome](https://biomejs.dev) plugins that reject low-evidence and low-signal TypeScript and JavaScript patterns.
 
 This is a Biome port of [dmmulroy/anti-slop](https://github.com/dmmulroy/anti-slop), which implements the same ruleset as Oxlint plugins. The rules, their exceptions, and their messages follow the original. The implementation is rewritten against Biome's syntax tree and semantic model, and the differences are listed under [Analysis boundaries](#analysis-boundaries).
@@ -15,9 +17,19 @@ Like the original, it reflects one team's preferences and taste rather than a un
 
 ## Install with an agent skill
 
+The `install-anti-slop` skill is distributed through [skills.sh](https://skills.sh), the directory for the open agent skills ecosystem. Its [`skills` CLI](https://github.com/vercel-labs/skills) runs through `npx`, needs Node.js 22.20 or later, and works with Claude Code, Codex, Cursor, OpenCode, and [many other agents](https://github.com/vercel-labs/skills/blob/main/docs/agents.md). Run it from the root of the repository you want to lint:
+
 ```bash
 npx skills add arberbr/biome-anti-slop --skill install-anti-slop
 ```
+
+The CLI detects your installed agents and asks which ones should receive the skill. To skip the prompts, name the agent and confirm up front:
+
+```bash
+npx skills add arberbr/biome-anti-slop --skill install-anti-slop -a claude-code -y
+```
+
+Skills install into the current project by default; add `-g` to make the skill available across all your projects. To run it once without installing it, use `npx skills use arberbr/biome-anti-slop@install-anti-slop --agent claude-code`.
 
 Then ask your coding agent to install anti-slop in the current repository. The skill:
 
@@ -30,6 +42,19 @@ Then ask your coding agent to install anti-slop in the current repository. The s
 In repositories that depend directly on Effect, it also enables the opt-in Effect preset.
 
 To update an existing installation, ask your agent to **update anti-slop while preserving local customizations**, optionally naming an upstream revision or particular fixes. The skill stages incoming source separately, uses a three-way merge when the original upstream snapshot is recoverable, and otherwise ports reviewed changes conservatively. It preserves local rules and configuration, asks before resolving conflicting policy or enabling new rules, and records provenance for future updates.
+
+The skill itself, including the copy of the rules it bundles, is managed by the `skills` CLI. Refresh it before asking for an anti-slop update, so the agent merges from the latest rules:
+
+| Command                               | Effect                                                   |
+| ------------------------------------- | -------------------------------------------------------- |
+| `npx skills check`                    | Report installed skills that have updates available      |
+| `npx skills update install-anti-slop` | Fetch the latest version of the skill                    |
+| `npx skills list`                     | List the skills installed in this project                |
+| `npx skills remove install-anti-slop` | Remove the skill; the vendored rules stay where they are |
+
+Updating the skill never touches the rules already vendored into your repository; only the agent-driven update above changes those.
+
+skills.sh lists skills ranked by anonymous install telemetry from the CLI. Set `DISABLE_TELEMETRY=1` or `DO_NOT_TRACK=1` to opt out. skills.sh audits listed skills but does not guarantee their safety, so read [`skills/install-anti-slop/SKILL.md`](skills/install-anti-slop/SKILL.md) before installing it, as you would any skill.
 
 ## Manual installation
 
